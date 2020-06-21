@@ -1,9 +1,8 @@
-drop_0 = [];
-drop_Num = 100; // 粒子的数量
+drop_Num = 20; // 粒子的数量
 repulsion_r = 13; // 粒子排斥半径，防止扎堆
-cohesion_r = 200; // 粒子聚拢吸引半径
+cohesion_r = 150; // 粒子聚拢吸引半径
 speed = 3; //粒子的飞行速度上限
-
+drop_0 = [];
 function preload() {
   myFont = loadFont('AM293.ttf');
 }
@@ -12,7 +11,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(HSB, 360, 100, 100, 1);
   for (i = 0; i <= drop_Num; i++) {
-    drop_0[i] = new Drop(240);
+    drop_0[i] = new Drop();
   }
 }
 
@@ -25,15 +24,17 @@ function draw() {
   for (let a of drop_0) {
     a.update();
   }
-
+  mouseCreate();
 }
 class Drop {
-  constructor(color_s) {
-    this.pos = createVector(random(width),random(height));
+  constructor(x,y,color_s) {
+    this.x = x || random(width);
+    this.y = y || random(height);
+    this.pos = createVector(x,y);
     this.vel = createVector(random(-1,1),random(-1,1));
     this.acc = createVector();
     this.weight = random(3,8);
-    this.color = random(color_s - 80, color_s + 80);
+    this.color = 240 || color_s;
     this.acc_limit = random(0.1,0.3);
     this.vel_limit = random(1,speed);
     this.repulsion = createVector();
@@ -41,9 +42,7 @@ class Drop {
   }
   
   update(){
-
     this.checkedge();
-    this.getmouse();
     this.move();
     this.display();
 
@@ -77,12 +76,13 @@ class Drop {
       let dist = p5.Vector.sub(other.pos,this.pos);
       let dist_l = dist.mag();
       if( dist_l < repulsion_r && other != this){
-        let f = map(dist_l, 0,repulsion_r,1,0);
+        let f = map(dist_l, 0,repulsion_r,0.5,0);
         dist.mult(-f);
         this.repulsion.add(dist);
       }
     }
     this.acc.add(this.repulsion);
+    
   
   }
   keepCohesion(){
@@ -100,13 +100,6 @@ class Drop {
       }
     }
   }
-  getmouse(){
-    if(mouseIsPressed){
-      this.dir = p5.Vector.sub(createVector(mouseX,mouseY),this.pos);
-      this.acc.add(this.dir);
-    }
-  }
-
 }
 
 function showText() {
@@ -121,3 +114,8 @@ function showText() {
   textFont(myFont);
   textStyle(BOLD);
 }
+function mouseCreate() {
+    if(mouseIsPressed){
+        drop_0.push(new Drop(mouseX,mouseY));
+    }
+  }
