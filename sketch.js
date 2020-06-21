@@ -1,8 +1,8 @@
 drop_0 = [];
-drop_Num = 200; // 粒子的数量
-repulsion_r = 15; // 粒子排斥半径，防止扎堆
+drop_Num = 100; // 粒子的数量
+repulsion_r = 13; // 粒子排斥半径，防止扎堆
 cohesion_r = 200; // 粒子聚拢吸引半径
-speed = 2          ; //粒子的飞行速度上限
+speed = 3; //粒子的飞行速度上限
 
 function preload() {
   myFont = loadFont('AM293.ttf');
@@ -18,14 +18,12 @@ function setup() {
 
 function draw() {
   //background(0);
-  fill(0, 0.1);
+  fill(0, 0.2);
   noStroke();
   rect(0, 0, width, height);
-  for (i = 0; i <= drop_Num; i++) {
-    drop_0[i].update();
-    if (i == drop_Num / 4) {
-      showText()
-    }
+  showText();
+  for (let a of drop_0) {
+    a.update();
   }
 
 }
@@ -99,14 +97,9 @@ class Drop {
       if(count > 0 ){
         this.cohesion.mult(1/count);
         this.acc.add(this.cohesion);
-      
       }
     }
-  
-  
-  
   }
-  
   getmouse(){
     if(mouseIsPressed){
       this.dir = p5.Vector.sub(createVector(mouseX,mouseY),this.pos);
@@ -124,7 +117,7 @@ function showText() {
   fill("white");
   textAlign(CENTER);
   text('F L O C K', width / 2 + (text_offsetX * offset_rate), height / 2 + (text_offsetY * offset_rate) + 40);
-  textSize(180);
+  textSize(64);
   textFont(myFont);
   textStyle(BOLD);
 }
